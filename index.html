@@ -51,6 +51,28 @@
       --c-fn:    #b45309;
     }
 
+    [data-theme="fallout"] {
+      --bg:      #060a04;
+      --bg2:     #0c1108;
+      --bg3:     #141f0e;
+      --border:  #1f3314;
+      --text:    #a8e060;
+      --dim:     #4a7a28;
+      --accent:  #4af626;
+      --green:   #4af626;
+      --red:     #c8f040;
+      --yellow:  #d4f020;
+      --purple:  #80e840;
+      --c-key:   #4af626;
+      --c-str:   #a8e060;
+      --c-num:   #7af040;
+      --c-bool:  #c8f040;
+      --c-null:  #5a8a30;
+      --c-kw:    #3ad020;
+      --c-cmt:   #2a5018;
+      --c-fn:    #d4f020;
+    }
+
     [data-theme="monokai"] {
       --bg:      #1a1b16;
       --bg2:     #23241e;
@@ -1132,11 +1154,12 @@ document.addEventListener('click', e => {
 
 // ── Theme picker ─────────────────────────────────────────────────────────────
 const THEMES = [
-  { id: 'dark',    name: 'Dark',    desc: 'Тёмная ночь',    bg: '#0f1117', bg2: '#161b27', key: '#7dd3fc', str: '#86efac', num: '#fdba74' },
-  { id: 'light',   name: 'Light',   desc: 'Светлая тема',   bg: '#f6f8fa', bg2: '#ffffff', key: '#0369a1', str: '#16a34a', num: '#d97706' },
-  { id: 'monokai', name: 'Monokai', desc: 'Классика кода',  bg: '#1a1b16', bg2: '#23241e', key: '#66d9e8', str: '#e6db74', num: '#ae81ff' },
-  { id: 'nord',    name: 'Nord',    desc: 'Северное сияние',bg: '#242933', bg2: '#2e3440', key: '#88c0d0', str: '#a3be8c', num: '#b48ead' },
-  { id: 'github',  name: 'GitHub',  desc: 'GitHub Light',   bg: '#ffffff', bg2: '#f6f8fa', key: '#0550ae', str: '#0a3069', num: '#953800' },
+  { id: 'light',   name: 'Light',   desc: 'Светлая тема',    bg: '#f6f8fa', bg2: '#ffffff', key: '#0369a1', str: '#16a34a', num: '#d97706' },
+  { id: 'fallout', name: 'Fallout', desc: 'Терминал Убежища', bg: '#060a04', bg2: '#0c1108', key: '#4af626', str: '#a8e060', num: '#7af040' },
+  { id: 'dark',    name: 'Dark',    desc: 'Тёмная ночь',     bg: '#0f1117', bg2: '#161b27', key: '#7dd3fc', str: '#86efac', num: '#fdba74' },
+  { id: 'monokai', name: 'Monokai', desc: 'Классика кода',   bg: '#1a1b16', bg2: '#23241e', key: '#66d9e8', str: '#e6db74', num: '#ae81ff' },
+  { id: 'nord',    name: 'Nord',    desc: 'Северное сияние',  bg: '#242933', bg2: '#2e3440', key: '#88c0d0', str: '#a3be8c', num: '#b48ead' },
+  { id: 'github',  name: 'GitHub',  desc: 'GitHub Light',    bg: '#ffffff', bg2: '#f6f8fa', key: '#0550ae', str: '#0a3069', num: '#953800' },
 ];
 
 const htmlEl = document.documentElement;
