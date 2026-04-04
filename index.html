@@ -261,7 +261,7 @@
     .fields-list {
       flex: 1;
       overflow-y: auto;
-      padding: 12px;
+      padding: 10px 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -271,10 +271,10 @@
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .field-row-top {
@@ -292,7 +292,7 @@
       border-radius: 6px;
       padding: 0 8px;
       color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       outline: none;
     }
@@ -316,15 +316,25 @@
 
     .field-opts {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .field-opts-label {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .field-opt-input {
       flex: 1;
+      height: 26px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 4px 8px;
+      padding: 0 8px;
       color: var(--dim);
       font-family: 'Inter', sans-serif;
       font-size: 11px;
@@ -334,21 +344,25 @@
     .field-opt-input:focus { border-color: var(--accent); color: var(--text); }
 
     .del-btn {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
       background: transparent;
       border: none;
       color: var(--dim);
       cursor: pointer;
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-size: 14px;
-      line-height: 1;
-      transition: color 0.15s;
+      border-radius: 6px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, background 0.15s;
     }
 
-    .del-btn:hover { color: var(--red); }
+    .del-btn:hover { color: var(--red); background: var(--bg3); }
 
     .add-field-btn {
-      margin: 12px;
+      margin: 0 16px 12px;
       background: transparent;
       border: 1px dashed var(--border);
       border-radius: 8px;
@@ -827,7 +841,7 @@ function renderField(f) {
       </select>
       <button class="del-btn" title="Remove">×</button>
     </div>
-    ${optsHtml ? `<div class="field-opts">${optsHtml}</div>` : ''}
+    ${optsHtml ? `<div class="field-opts"><span class="field-opts-label">opts</span>${optsHtml}</div>` : ''}
   `;
 
   row.querySelector('.field-name').addEventListener('input', e => {
@@ -886,7 +900,7 @@ function setupRowEvents(row, f) {
     if (newOptsHtml) {
       const div = document.createElement('div');
       div.className = 'field-opts';
-      div.innerHTML = newOptsHtml;
+      div.innerHTML = `<span class="field-opts-label">opts</span>` + newOptsHtml;
       row.appendChild(div);
       div.querySelectorAll('.field-opt-input').forEach(inp => {
         f.opts[inp.dataset.opt] = inp.value;
