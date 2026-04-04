@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Data Generator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg:      #0f1117;
+      --bg2:     #161b27;
+      --bg3:     #1e2535;
+      --border:  #2a3147;
+      --text:    #e2e8f0;
+      --dim:     #7c8aa0;
+      --accent:  #4f8ef7;
+      --green:   #34d399;
+      --red:     #f87171;
+      --yellow:  #fbbf24;
+      --purple:  #a78bfa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    label.ctrl-label {
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    input[type="number"].count-input {
+      width: 64px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      text-align: center;
+    }
+
+    select.fmt-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 6px 14px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover { background: #6ba3ff; }
+
+    .btn-ghost { background: transparent; color: var(--dim); }
+    .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+
+    .btn-green { background: transparent; color: var(--green); border-color: #1a4a32; }
+    .btn-green:hover { background: rgba(52,211,153,0.1); }
+
+    /* ── Main layout ── */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Schema panel ── */
+    .schema-panel {
+      width: 340px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--dim);
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .fields-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-row {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-row-top {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .field-name {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .field-name:focus { border-color: var(--accent); }
+
+    .field-type {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      min-width: 130px;
+    }
+
+    .field-opts {
+      display: flex;
+      gap: 8px;
+    }
+
+    .field-opt-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: var(--dim);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .field-opt-input:focus { border-color: var(--accent); color: var(--text); }
+
+    .del-btn {
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    .del-btn:hover { color: var(--red); }
+
+    .add-field-btn {
+      margin: 12px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 9px;
+      color: var(--dim);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .add-field-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.05); }
+
+    /* ── Output panel ── */
+    .output-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .output-header {
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--dim);
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .output-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 0;
+    }
+
+    pre#output {
+      margin: 0;
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre;
+      min-height: 100%;
+    }
+
+    /* syntax highlight */
+    .t-key    { color: #7dd3fc; }
+    .t-str    { color: #86efac; }
+    .t-num    { color: #fdba74; }
+    .t-bool   { color: #a78bfa; }
+    .t-null   { color: #f87171; }
+    .t-kw     { color: #f472b6; }
+    .t-comment{ color: #4a5568; }
+    .t-fn     { color: #fbbf24; }
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--dim);
+      font-size: 14px;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Mock Generator
+  </div>
+
+  <div class="header-controls">
+    <label class="ctrl-label">Records</label>
+    <input type="number" class="count-input" id="count" value="10" min="1" max="500">
+
+    <label class="ctrl-label">Format</label>
+    <select class="fmt-select" id="format">
+      <option value="json">JSON array</option>
+      <option value="js">JS export</option>
+      <option value="composable">Vue composable</option>
+      <option value="pinia">Pinia store</option>
+      <option value="ts">TypeScript types</option>
+    </select>
+
+    <button class="btn btn-primary" id="btn-generate">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Generate
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Schema -->
+  <div class="schema-panel">
+    <div class="panel-header">
+      <span>Schema</span>
+      <button class="btn btn-ghost" style="font-size:11px;padding:3px 8px;" id="btn-load-preset">Presets</button>
+    </div>
+    <div class="fields-list" id="fields-list"></div>
+    <button class="add-field-btn" id="btn-add-field">+ Add field</button>
+  </div>
+
+  <!-- Output -->
+  <div class="output-panel">
+    <div class="output-header">
+      <span>Output</span>
+      <div class="output-actions">
+        <button class="btn btn-ghost" id="btn-copy" style="font-size:12px;padding:4px 10px;">Copy</button>
+        <button class="btn btn-green" id="btn-download" style="font-size:12px;padding:4px 10px;">Download</button>
+      </div>
+    </div>
+    <div class="output-wrap">
+      <pre id="output"><span style="color:var(--dim);font-size:13px;">// Press Generate to create mock data</span></pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- Presets dropdown -->
+<div id="presets-menu" style="display:none;position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px;z-index:999;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+</div>
+
+<script>
+// ── Data generators ──────────────────────────────────────────────────────────
+const R = {
+  pick: arr => arr[Math.floor(Math.random() * arr.length)],
+  int: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
+  float: (min, max, dp = 2) => parseFloat((Math.random() * (max - min) + min).toFixed(dp)),
+  bool: () => Math.random() > 0.5,
+  uuid: () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  }),
+};
+
+const DATA = {
+  firstNames: ['Alice','Bob','Carol','David','Emma','Frank','Grace','Henry','Irene','Jack','Kate','Liam','Mia','Noah','Olivia','Paul','Quinn','Rachel','Sam','Tara','Uma','Victor','Wendy','Xander','Yara','Zoe','Alex','Jamie','Morgan','Riley'],
+  lastNames:  ['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Wilson','Anderson','Taylor','Thomas','Moore','Jackson','White','Harris','Martin','Thompson','Lee','Walker','Hall','Allen','Young','King','Wright','Scott','Green','Baker','Adams','Nelson'],
+  domains:    ['gmail.com','yahoo.com','outlook.com','company.io','dev.co','mail.ru','inbox.com'],
+  companies:  ['Acme Corp','TechBase','DevOps Ltd','Horizon AI','CloudSync','NovaSystems','DataBridge','AlphaCode','ByteWorks','FusionLabs'],
+  cities:     ['New York','London','Tokyo','Berlin','Paris','Sydney','Toronto','Amsterdam','Seoul','Singapore','Dubai','Barcelona','Chicago','Mumbai','São Paulo'],
+  countries:  ['US','GB','JP','DE','FR','AU','CA','NL','KR','SG','AE','ES','IN','BR'],
+  streets:    ['Main St','Oak Ave','Park Blvd','Maple Dr','Cedar Ln','Pine St','Elm Rd','River Way','Lake Dr','Hill Ave'],
+  statuses:   ['active','inactive','pending','archived'],
+  roles:      ['admin','user','moderator','viewer','editor'],
+  colors:     ['red','green','blue','yellow','purple','orange','pink','teal','cyan','indigo'],
+  lorem:      'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'.split(' '),
+  tlds:       ['com','io','dev','app','co','net','org'],
+};
+
+function gen(type, opts = {}) {
+  switch (type) {
+    case 'id':          return R.int(1, 9999);
+    case 'uuid':        return R.uuid();
+    case 'firstName':   return R.pick(DATA.firstNames);
+    case 'lastName':    return R.pick(DATA.lastNames);
+    case 'fullName':    return `${R.pick(DATA.firstNames)} ${R.pick(DATA.lastNames)}`;
+    case 'email': {
+      const name = `${R.pick(DATA.firstNames).toLowerCase()}.${R.pick(DATA.lastNames).toLowerCase()}`;
+      return `${name}@${R.pick(DATA.domains)}`;
+    }
+    case 'phone':       return `+${R.int(1,9)}${R.int(100,999)}-${R.int(100,999)}-${R.int(1000,9999)}`;
+    case 'company':     return R.pick(DATA.companies);
+    case 'city':        return R.pick(DATA.cities);
+    case 'country':     return R.pick(DATA.countries);
+    case 'address':     return `${R.int(1,999)} ${R.pick(DATA.streets)}, ${R.pick(DATA.cities)}`;
+    case 'url':         return `https://${R.pick(DATA.firstNames).toLowerCase()}-${R.pick(DATA.lastNames).toLowerCase()}.${R.pick(DATA.tlds)}`;
+    case 'avatar':      return `https://i.pravatar.cc/150?u=${R.uuid()}`;
+    case 'integer':     return R.int(opts.min ?? 0, opts.max ?? 1000);
+    case 'float':       return R.float(opts.min ?? 0, opts.max ?? 100, opts.dp ?? 2);
+    case 'price':       return R.float(1, 999, 2);
+    case 'boolean':     return R.bool();
+    case 'status':      return R.pick(DATA.statuses);
+    case 'role':        return R.pick(DATA.roles);
+    case 'color':       return R.pick(DATA.colors);
+    case 'hex':         return '#' + Math.floor(Math.random()*0xFFFFFF).toString(16).padStart(6,'0');
+    case 'date': {
+      const from = new Date(opts.from || '2020-01-01');
+      const to   = new Date(opts.to   || '2025-12-31');
+      const d    = new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime()));
+      return d.toISOString().split('T')[0];
+    }
+    case 'datetime': {
+      const from = new Date('2020-01-01');
+      const to   = new Date('2025-12-31');
+      return new Date(from.getTime() + Math.random() * (to.getTime() - from.getTime())).toISOString();
+    }
+    case 'lorem': {
+      const n = opts.words ?? 8;
+      return Array.from({ length: n }, () => R.pick(DATA.lorem)).join(' ') + '.';
+    }
+    case 'enum': {
+      const vals = (opts.values || 'a,b,c').split(',').map(v => v.trim()).filter(Boolean);
+      return R.pick(vals);
+    }
+    default: return null;
+  }
+}
+
+const TYPES = [
+  { value: 'id',        label: 'ID (integer)' },
+  { value: 'uuid',      label: 'UUID' },
+  { value: 'fullName',  label: 'Full name' },
+  { value: 'firstName', label: 'First name' },
+  { value: 'lastName',  label: 'Last name' },
+  { value: 'email',     label: 'Email' },
+  { value: 'phone',     label: 'Phone' },
+  { value: 'company',   label: 'Company' },
+  { value: 'city',      label: 'City' },
+  { value: 'country',   label: 'Country code' },
+  { value: 'address',   label: 'Address' },
+  { value: 'url',       label: 'URL' },
+  { value: 'avatar',    label: 'Avatar URL' },
+  { value: 'integer',   label: 'Integer',      hasOpts: ['min','max'] },
+  { value: 'float',     label: 'Float',        hasOpts: ['min','max'] },
+  { value: 'price',     label: 'Price' },
+  { value: 'boolean',   label: 'Boolean' },
+  { value: 'status',    label: 'Status' },
+  { value: 'role',      label: 'Role' },
+  { value: 'color',     label: 'Color name' },
+  { value: 'hex',       label: 'Hex color' },
+  { value: 'date',      label: 'Date',         hasOpts: ['from','to'] },
+  { value: 'datetime',  label: 'Datetime ISO' },
+  { value: 'lorem',     label: 'Lorem ipsum',  hasOpts: ['words'] },
+  { value: 'enum',      label: 'Enum (custom)', hasOpts: ['values'] },
+];
+
+const PRESETS = {
+  'User': [
+    { name: 'id',        type: 'id',       opts: {} },
+    { name: 'name',      type: 'fullName', opts: {} },
+    { name: 'email',     type: 'email',    opts: {} },
+    { name: 'role',      type: 'role',     opts: {} },
+    { name: 'avatar',    type: 'avatar',   opts: {} },
+    { name: 'createdAt', type: 'date',     opts: {} },
+  ],
+  'Product': [
+    { name: 'id',          type: 'uuid',   opts: {} },
+    { name: 'title',       type: 'lorem',  opts: { words: 4 } },
+    { name: 'price',       type: 'price',  opts: {} },
+    { name: 'category',    type: 'enum',   opts: { values: 'electronics,clothing,food,books,sports' } },
+    { name: 'inStock',     type: 'boolean',opts: {} },
+    { name: 'image',       type: 'avatar', opts: {} },
+  ],
+  'Order': [
+    { name: 'id',         type: 'uuid',    opts: {} },
+    { name: 'userId',     type: 'id',      opts: {} },
+    { name: 'total',      type: 'price',   opts: {} },
+    { name: 'status',     type: 'enum',    opts: { values: 'pending,processing,shipped,delivered,cancelled' } },
+    { name: 'createdAt',  type: 'datetime',opts: {} },
+  ],
+  'Employee': [
+    { name: 'id',         type: 'id',       opts: {} },
+    { name: 'firstName',  type: 'firstName',opts: {} },
+    { name: 'lastName',   type: 'lastName', opts: {} },
+    { name: 'email',      type: 'email',    opts: {} },
+    { name: 'department', type: 'enum',     opts: { values: 'Engineering,Product,Design,Sales,Marketing,HR' } },
+    { name: 'company',    type: 'company',  opts: {} },
+    { name: 'city',       type: 'city',     opts: {} },
+    { name: 'salary',     type: 'integer',  opts: { min: 50000, max: 200000 } },
+  ],
+  'Task': [
+    { name: 'id',         type: 'uuid',    opts: {} },
+    { name: 'title',      type: 'lorem',   opts: { words: 5 } },
+    { name: 'assignee',   type: 'fullName',opts: {} },
+    { name: 'status',     type: 'enum',    opts: { values: 'todo,in_progress,review,done' } },
+    { name: 'priority',   type: 'enum',    opts: { values: 'low,medium,high,critical' } },
+    { name: 'dueDate',    type: 'date',    opts: {} },
+  ],
+};
+
+// ── Field row UI ─────────────────────────────────────────────────────────────
+let fields = [];
+let fieldIdx = 0;
+
+function typeInfo(type) {
+  return TYPES.find(t => t.value === type) || {};
+}
+
+function renderField(f) {
+  const row = document.createElement('div');
+  row.className = 'field-row';
+  row.dataset.id = f.id;
+
+  const info = typeInfo(f.type);
+  const optsHtml = (info.hasOpts || []).map(opt => {
+    const ph = opt === 'values' ? 'a, b, c' : opt === 'words' ? '8' : opt;
+    return `<input class="field-opt-input" data-opt="${opt}" placeholder="${ph}" value="${f.opts[opt] ?? ''}">`;
+  }).join('');
+
+  row.innerHTML = `
+    <div class="field-row-top">
+      <input class="field-name" value="${f.name}" placeholder="fieldName">
+      <select class="field-type">
+        ${TYPES.map(t => `<option value="${t.value}"${t.value === f.type ? ' selected' : ''}>${t.label}</option>`).join('')}
+      </select>
+      <button class="del-btn" title="Remove">×</button>
+    </div>
+    ${optsHtml ? `<div class="field-opts">${optsHtml}</div>` : ''}
+  `;
+
+  row.querySelector('.field-name').addEventListener('input', e => {
+    f.name = e.target.value;
+  });
+
+  row.querySelector('.field-type').addEventListener('change', e => {
+    f.type = e.target.value;
+    f.opts = {};
+    // re-render this row
+    const newRow = document.createElement('div');
+    newRow.className = 'field-row';
+    newRow.dataset.id = f.id;
+    const ni = typeInfo(f.type);
+    const newOptsHtml = (ni.hasOpts || []).map(opt => {
+      return `<input class="field-opt-input" data-opt="${opt}" placeholder="${opt === 'values' ? 'a, b, c' : opt}">`;
+    }).join('');
+    newRow.innerHTML = `
+      <div class="field-row-top">
+        <input class="field-name" value="${f.name}" placeholder="fieldName">
+        <select class="field-type">
+          ${TYPES.map(t => `<option value="${t.value}"${t.value === f.type ? ' selected' : ''}>${t.label}</option>`).join('')}
+        </select>
+        <button class="del-btn" title="Remove">×</button>
+      </div>
+      ${newOptsHtml ? `<div class="field-opts">${newOptsHtml}</div>` : ''}
+    `;
+    setupRowEvents(newRow, f);
+    row.replaceWith(newRow);
+  });
+
+  row.querySelector('.del-btn').addEventListener('click', () => {
+    fields = fields.filter(x => x.id !== f.id);
+    row.remove();
+  });
+
+  row.querySelectorAll('.field-opt-input').forEach(inp => {
+    f.opts[inp.dataset.opt] = inp.value;
+    inp.addEventListener('input', e => { f.opts[e.target.dataset.opt] = e.target.value; });
+  });
+
+  return row;
+}
+
+function setupRowEvents(row, f) {
+  row.querySelector('.field-name').addEventListener('input', e => { f.name = e.target.value; });
+  row.querySelector('.field-type').addEventListener('change', e => {
+    f.type = e.target.value;
+    f.opts = {};
+    const ni = typeInfo(f.type);
+    const newOptsHtml = (ni.hasOpts || []).map(opt =>
+      `<input class="field-opt-input" data-opt="${opt}" placeholder="${opt === 'values' ? 'a, b, c' : opt}">`
+    ).join('');
+    let optsDiv = row.querySelector('.field-opts');
+    if (optsDiv) optsDiv.remove();
+    if (newOptsHtml) {
+      const div = document.createElement('div');
+      div.className = 'field-opts';
+      div.innerHTML = newOptsHtml;
+      row.appendChild(div);
+      div.querySelectorAll('.field-opt-input').forEach(inp => {
+        f.opts[inp.dataset.opt] = inp.value;
+        inp.addEventListener('input', ev => { f.opts[ev.target.dataset.opt] = ev.target.value; });
+      });
+    }
+  });
+  row.querySelector('.del-btn').addEventListener('click', () => {
+    fields = fields.filter(x => x.id !== f.id);
+    row.remove();
+  });
+  row.querySelectorAll('.field-opt-input').forEach(inp => {
+    f.opts[inp.dataset.opt] = inp.value;
+    inp.addEventListener('input', e => { f.opts[e.target.dataset.opt] = e.target.value; });
+  });
+}
+
+function addField(name = '', type = 'fullName', opts = {}) {
+  const f = { id: ++fieldIdx, name, type, opts: { ...opts } };
+  fields.push(f);
+  const row = renderField(f);
+  document.getElementById('fields-list').appendChild(row);
+}
+
+function loadPreset(name) {
+  fields = [];
+  document.getElementById('fields-list').innerHTML = '';
+  PRESETS[name].forEach(f => addField(f.name, f.type, f.opts));
+}
+
+// ── Generate ─────────────────────────────────────────────────────────────────
+function generateData() {
+  const count = Math.min(Math.max(parseInt(document.getElementById('count').value) || 10, 1), 500);
+  const fmt   = document.getElementById('format').value;
+
+  if (!fields.length) return alert('Add at least one field.');
+
+  const records = Array.from({ length: count }, (_, i) => {
+    const obj = {};
+    fields.forEach(f => {
+      if (!f.name) return;
+      obj[f.name] = gen(f.type, f.opts);
+    });
+    return obj;
+  });
+
+  let output = '';
+  const resourceName = guessName();
+
+  switch (fmt) {
+    case 'json':
+      output = highlight(JSON.stringify(records, null, 2), 'json');
+      break;
+
+    case 'js':
+      output = highlight(
+        `// Generated mock data — ${records.length} records\nexport default ${JSON.stringify(records, null, 2)}`,
+        'js'
+      );
+      break;
+
+    case 'composable': {
+      const json = JSON.stringify(records, null, 4).replace(/^/gm, '  ');
+      output = highlight(
+        `import { ref } from 'vue'\n\nexport function useMock${cap(resourceName)}() {\n  const data = ref(${json})\n\n  return { data }\n}`,
+        'js'
+      );
+      break;
+    }
+
+    case 'pinia': {
+      const json = JSON.stringify(records, null, 6).replace(/\n/g, '\n  ');
+      output = highlight(
+        `import { defineStore } from 'pinia'\n\nexport const use${cap(resourceName)}Store = defineStore('${resourceName}', {\n  state: () => ({\n    items: ${json},\n    loading: false,\n    selected: null,\n  }),\n\n  getters: {\n    count: (state) => state.items.length,\n  },\n\n  actions: {\n    setSelected(id) {\n      this.selected = this.items.find(i => i.id === id) ?? null\n    },\n  },\n})`,
+        'js'
+      );
+      break;
+    }
+
+    case 'ts': {
+      const sample = records[0] || {};
+      const iface = Object.entries(sample).map(([k, v]) => {
+        const t = v === null ? 'null' : typeof v === 'boolean' ? 'boolean' : typeof v === 'number' ? 'number' : 'string';
+        return `  ${k}: ${t}`;
+      }).join('\n');
+      output = highlight(
+        `export interface ${cap(resourceName)} {\n${iface}\n}\n\nexport const mock${cap(resourceName)}s: ${cap(resourceName)}[] = ${JSON.stringify(records, null, 2)}`,
+        'ts'
+      );
+      break;
+    }
+  }
+
+  document.getElementById('output').innerHTML = output;
+  window._lastOutput = outputRaw(records, fmt, resourceName);
+}
+
+function outputRaw(records, fmt, name) {
+  switch (fmt) {
+    case 'json': return JSON.stringify(records, null, 2);
+    case 'js':   return `// Generated mock data — ${records.length} records\nexport default ${JSON.stringify(records, null, 2)}`;
+    case 'composable': {
+      const json = JSON.stringify(records, null, 4).replace(/^/gm, '  ');
+      return `import { ref } from 'vue'\n\nexport function useMock${cap(name)}() {\n  const data = ref(${json})\n\n  return { data }\n}`;
+    }
+    case 'pinia': {
+      const json = JSON.stringify(records, null, 6).replace(/\n/g, '\n  ');
+      return `import { defineStore } from 'pinia'\n\nexport const use${cap(name)}Store = defineStore('${name}', {\n  state: () => ({\n    items: ${json},\n    loading: false,\n    selected: null,\n  }),\n\n  getters: {\n    count: (state) => state.items.length,\n  },\n\n  actions: {\n    setSelected(id) {\n      this.selected = this.items.find(i => i.id === id) ?? null\n    },\n  },\n})`;
+    }
+    case 'ts': {
+      const sample = records[0] || {};
+      const iface = Object.entries(sample).map(([k, v]) => {
+        const t = v === null ? 'null' : typeof v === 'boolean' ? 'boolean' : typeof v === 'number' ? 'number' : 'string';
+        return `  ${k}: ${t}`;
+      }).join('\n');
+      return `export interface ${cap(name)} {\n${iface}\n}\n\nexport const mock${cap(name)}s: ${cap(name)}[] = ${JSON.stringify(records, null, 2)}`;
+    }
+  }
+}
+
+function guessName() {
+  const nameField = fields.find(f => f.name && (f.name.includes('name') || f.name.includes('title')));
+  return nameField ? nameField.name.replace(/name|title/i, '') || 'item' : 'item';
+}
+
+function cap(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ── Syntax highlight ──────────────────────────────────────────────────────────
+function highlight(code, lang) {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  if (lang === 'json') {
+    return esc(code)
+      .replace(/("(?:[^"\\]|\\.)*")\s*:/g, '<span class="t-key">$1</span>:')
+      .replace(/:\s*("(?:[^"\\]|\\.)*")/g, ': <span class="t-str">$1</span>')
+      .replace(/:\s*(\-?\d+\.?\d*)/g, ': <span class="t-num">$1</span>')
+      .replace(/:\s*(true|false)/g, ': <span class="t-bool">$1</span>')
+      .replace(/:\s*(null)/g, ': <span class="t-null">$1</span>');
+  }
+
+  // js/ts — basic
+  return esc(code)
+    .replace(/(\/\/.*)/g, '<span class="t-comment">$1</span>')
+    .replace(/\b(import|export|from|const|let|var|function|return|default|interface)\b/g, '<span class="t-kw">$1</span>')
+    .replace(/\b(ref|defineStore|defineComponent)\b/g, '<span class="t-fn">$1</span>')
+    .replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, '<span class="t-str">$1</span>')
+    .replace(/\b(\d+\.?\d*)\b/g, '<span class="t-num">$1</span>')
+    .replace(/\b(true|false|null)\b/g, '<span class="t-bool">$1</span>');
+}
+
+// ── Copy / Download ───────────────────────────────────────────────────────────
+document.getElementById('btn-copy').addEventListener('click', async () => {
+  if (!window._lastOutput) return;
+  await navigator.clipboard.writeText(window._lastOutput);
+  const btn = document.getElementById('btn-copy');
+  btn.textContent = '✓ Copied';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+});
+
+document.getElementById('btn-download').addEventListener('click', () => {
+  if (!window._lastOutput) return;
+  const fmt = document.getElementById('format').value;
+  const ext = { json: 'json', js: 'js', composable: 'js', pinia: 'js', ts: 'ts' }[fmt];
+  const name = `mock-${guessName()}.${ext}`;
+  const blob = new Blob([window._lastOutput], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+});
+
+document.getElementById('btn-generate').addEventListener('click', generateData);
+
+// ── Add field ─────────────────────────────────────────────────────────────────
+document.getElementById('btn-add-field').addEventListener('click', () => {
+  addField('', 'fullName');
+});
+
+// ── Presets ───────────────────────────────────────────────────────────────────
+const presetsMenu = document.getElementById('presets-menu');
+
+document.getElementById('btn-load-preset').addEventListener('click', (e) => {
+  if (presetsMenu.style.display !== 'none') { presetsMenu.style.display = 'none'; return; }
+  presetsMenu.innerHTML = Object.keys(PRESETS).map(name =>
+    `<button style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text);padding:7px 12px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;border-radius:5px;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='transparent'" data-preset="${name}">${name}</button>`
+  ).join('');
+  const r = e.target.getBoundingClientRect();
+  presetsMenu.style.top  = (r.bottom + 6) + 'px';
+  presetsMenu.style.left = r.left + 'px';
+  presetsMenu.style.display = 'block';
+});
+
+presetsMenu.addEventListener('click', e => {
+  const btn = e.target.closest('[data-preset]');
+  if (!btn) return;
+  loadPreset(btn.dataset.preset);
+  presetsMenu.style.display = 'none';
+});
+
+document.addEventListener('click', e => {
+  if (!presetsMenu.contains(e.target) && e.target.id !== 'btn-load-preset') {
+    presetsMenu.style.display = 'none';
+  }
+});
+
+// ── Init: load User preset ────────────────────────────────────────────────────
+loadPreset('User');
+generateData();
+</script>
+</body>
+</html>
