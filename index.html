@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    :root {
+    html, [data-theme="dark"] {
       --bg:      #0f1117;
       --bg2:     #161b27;
       --bg3:     #1e2535;
@@ -19,6 +19,102 @@
       --red:     #f87171;
       --yellow:  #fbbf24;
       --purple:  #a78bfa;
+      --c-key:   #7dd3fc;
+      --c-str:   #86efac;
+      --c-num:   #fdba74;
+      --c-bool:  #a78bfa;
+      --c-null:  #f87171;
+      --c-kw:    #f472b6;
+      --c-cmt:   #4a5568;
+      --c-fn:    #fbbf24;
+    }
+
+    [data-theme="light"] {
+      --bg:      #f6f8fa;
+      --bg2:     #ffffff;
+      --bg3:     #f0f2f5;
+      --border:  #d0d7de;
+      --text:    #111827;
+      --dim:     #6b7280;
+      --accent:  #2563eb;
+      --green:   #16a34a;
+      --red:     #dc2626;
+      --yellow:  #d97706;
+      --purple:  #7c3aed;
+      --c-key:   #0369a1;
+      --c-str:   #16a34a;
+      --c-num:   #d97706;
+      --c-bool:  #7c3aed;
+      --c-null:  #dc2626;
+      --c-kw:    #be185d;
+      --c-cmt:   #9ca3af;
+      --c-fn:    #b45309;
+    }
+
+    [data-theme="monokai"] {
+      --bg:      #1a1b16;
+      --bg2:     #23241e;
+      --bg3:     #2d2e26;
+      --border:  #3a3c30;
+      --text:    #f8f8f2;
+      --dim:     #75715e;
+      --accent:  #a6e22e;
+      --green:   #a6e22e;
+      --red:     #f92672;
+      --yellow:  #e6db74;
+      --purple:  #ae81ff;
+      --c-key:   #66d9e8;
+      --c-str:   #e6db74;
+      --c-num:   #ae81ff;
+      --c-bool:  #f92672;
+      --c-null:  #f92672;
+      --c-kw:    #f92672;
+      --c-cmt:   #75715e;
+      --c-fn:    #a6e22e;
+    }
+
+    [data-theme="nord"] {
+      --bg:      #242933;
+      --bg2:     #2e3440;
+      --bg3:     #3b4252;
+      --border:  #434c5e;
+      --text:    #eceff4;
+      --dim:     #9099a8;
+      --accent:  #88c0d0;
+      --green:   #a3be8c;
+      --red:     #bf616a;
+      --yellow:  #ebcb8b;
+      --purple:  #b48ead;
+      --c-key:   #88c0d0;
+      --c-str:   #a3be8c;
+      --c-num:   #b48ead;
+      --c-bool:  #81a1c1;
+      --c-null:  #bf616a;
+      --c-kw:    #81a1c1;
+      --c-cmt:   #616e88;
+      --c-fn:    #ebcb8b;
+    }
+
+    [data-theme="github"] {
+      --bg:      #ffffff;
+      --bg2:     #f6f8fa;
+      --bg3:     #eaeef2;
+      --border:  #d0d7de;
+      --text:    #24292f;
+      --dim:     #656d76;
+      --accent:  #0969da;
+      --green:   #1a7f37;
+      --red:     #cf222e;
+      --yellow:  #9a6700;
+      --purple:  #8250df;
+      --c-key:   #0550ae;
+      --c-str:   #0a3069;
+      --c-num:   #953800;
+      --c-bool:  #8250df;
+      --c-null:  #cf222e;
+      --c-kw:    #cf222e;
+      --c-cmt:   #6e7781;
+      --c-fn:    #8250df;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -299,14 +395,111 @@
     }
 
     /* syntax highlight */
-    .t-key    { color: #7dd3fc; }
-    .t-str    { color: #86efac; }
-    .t-num    { color: #fdba74; }
-    .t-bool   { color: #a78bfa; }
-    .t-null   { color: #f87171; }
-    .t-kw     { color: #f472b6; }
-    .t-comment{ color: #4a5568; }
-    .t-fn     { color: #fbbf24; }
+    .t-key    { color: var(--c-key); }
+    .t-str    { color: var(--c-str); }
+    .t-num    { color: var(--c-num); }
+    .t-bool   { color: var(--c-bool); }
+    .t-null   { color: var(--c-null); }
+    .t-kw     { color: var(--c-kw); }
+    .t-comment{ color: var(--c-cmt); }
+    .t-fn     { color: var(--c-fn); }
+
+    /* ── Theme picker ── */
+    .theme-picker { position: relative; }
+
+    .theme-picker-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 5px 10px;
+      color: var(--dim);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .theme-picker-btn:hover,
+    .theme-picker-btn.open { border-color: var(--accent); color: var(--text); }
+
+    .tp-chevron {
+      font-size: 8px;
+      transition: transform 0.2s;
+    }
+
+    .theme-picker-btn.open .tp-chevron { transform: rotate(180deg); }
+
+    .theme-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      z-index: 999;
+      min-width: 210px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .theme-dropdown.open {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-radius: 7px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s;
+    }
+
+    .theme-option:hover { background: var(--bg3); border-color: var(--border); }
+    .theme-option.active { background: var(--bg3); border-color: var(--accent); }
+
+    .to-preview {
+      width: 38px; height: 24px;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .to-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .to-desc {
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .to-check {
+      font-size: 12px;
+      color: var(--accent);
+      opacity: 0;
+      flex-shrink: 0;
+    }
+
+    .theme-option.active .to-check { opacity: 1; }
 
     .empty-state {
       display: flex;
@@ -345,6 +538,15 @@
       <option value="pinia">Pinia store</option>
       <option value="ts">TypeScript types</option>
     </select>
+
+    <div class="theme-picker" id="themePicker">
+      <button class="theme-picker-btn" id="themePickerBtn">
+        <span id="tpSwatch"></span>
+        <span id="tpLabel">Dark</span>
+        <span class="tp-chevron">▼</span>
+      </button>
+      <div class="theme-dropdown" id="themeDropdown"></div>
+    </div>
 
     <button class="btn btn-primary" id="btn-generate">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -827,6 +1029,92 @@ document.addEventListener('click', e => {
     presetsMenu.style.display = 'none';
   }
 });
+
+// ── Theme picker ─────────────────────────────────────────────────────────────
+const THEMES = [
+  { id: 'dark',    name: 'Dark',    desc: 'Тёмная ночь',    bg: '#0f1117', bg2: '#161b27', key: '#7dd3fc', str: '#86efac', num: '#fdba74' },
+  { id: 'light',   name: 'Light',   desc: 'Светлая тема',   bg: '#f6f8fa', bg2: '#ffffff', key: '#0369a1', str: '#16a34a', num: '#d97706' },
+  { id: 'monokai', name: 'Monokai', desc: 'Классика кода',  bg: '#1a1b16', bg2: '#23241e', key: '#66d9e8', str: '#e6db74', num: '#ae81ff' },
+  { id: 'nord',    name: 'Nord',    desc: 'Северное сияние',bg: '#242933', bg2: '#2e3440', key: '#88c0d0', str: '#a3be8c', num: '#b48ead' },
+  { id: 'github',  name: 'GitHub',  desc: 'GitHub Light',   bg: '#ffffff', bg2: '#f6f8fa', key: '#0550ae', str: '#0a3069', num: '#953800' },
+];
+
+const htmlEl = document.documentElement;
+let currentTheme = localStorage.getItem('mg-theme') || 'dark';
+htmlEl.setAttribute('data-theme', currentTheme);
+
+const themeDropdown  = document.getElementById('themeDropdown');
+const themePickerBtn = document.getElementById('themePickerBtn');
+const tpSwatch       = document.getElementById('tpSwatch');
+const tpLabel        = document.getElementById('tpLabel');
+
+function buildSwatchHTML(t) {
+  return `<span style="display:flex;width:20px;height:20px;border-radius:4px;overflow:hidden;position:relative;background:${t.bg};">
+    <span style="position:absolute;top:4px;left:4px;display:flex;flex-direction:column;gap:2px;">
+      <span style="width:11px;height:2px;border-radius:1px;background:${t.key};"></span>
+      <span style="width:8px;height:2px;border-radius:1px;background:${t.str};"></span>
+      <span style="width:6px;height:2px;border-radius:1px;background:${t.num};"></span>
+    </span>
+  </span>`;
+}
+
+function updateActiveSwatch() {
+  const t = THEMES.find(t => t.id === currentTheme) || THEMES[0];
+  tpSwatch.innerHTML = buildSwatchHTML(t);
+  tpLabel.textContent = t.name;
+  themeDropdown.querySelectorAll('.theme-option').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === currentTheme);
+  });
+}
+
+THEMES.forEach(t => {
+  const opt = document.createElement('div');
+  opt.className = 'theme-option';
+  opt.dataset.theme = t.id;
+  opt.innerHTML = `
+    <div class="to-preview" style="background:${t.bg};">
+      <span style="position:absolute;top:5px;left:6px;display:flex;flex-direction:column;gap:3px;">
+        <span style="width:20px;height:2px;border-radius:1px;background:${t.key};"></span>
+        <span style="width:14px;height:2px;border-radius:1px;background:${t.str};"></span>
+        <span style="width:10px;height:2px;border-radius:1px;background:${t.num};"></span>
+      </span>
+    </div>
+    <div>
+      <div class="to-name">${t.name}</div>
+      <div class="to-desc">${t.desc}</div>
+    </div>
+    <span class="to-check">✓</span>
+  `;
+  opt.addEventListener('click', () => {
+    currentTheme = t.id;
+    htmlEl.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('mg-theme', currentTheme);
+    updateActiveSwatch();
+    closeThemeDropdown();
+  });
+  themeDropdown.appendChild(opt);
+});
+
+function closeThemeDropdown() {
+  themeDropdown.classList.remove('open');
+  themePickerBtn.classList.remove('open');
+}
+
+themePickerBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = themeDropdown.classList.toggle('open');
+  themePickerBtn.classList.toggle('open', isOpen);
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.theme-picker')) closeThemeDropdown();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeThemeDropdown();
+});
+
+updateActiveSwatch();
 
 // ── Init: load User preset ────────────────────────────────────────────────────
 loadPreset('User');
