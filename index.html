@@ -1062,10 +1062,23 @@ function highlight(code, lang) {
     .replace(/\b(true|false|null)\b/g, '<span class="t-bool">$1</span>');
 }
 
+// ── Clipboard helper ─────────────────────────────────────────────────────────
+function copyToClipboard(text) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  return Promise.resolve();
+}
+
 // ── Copy / Download ───────────────────────────────────────────────────────────
 document.getElementById('btn-copy').addEventListener('click', async () => {
   if (!window._lastOutput) return;
-  await navigator.clipboard.writeText(window._lastOutput);
+  await copyToClipboard(window._lastOutput);
   const btn = document.getElementById('btn-copy');
   btn.textContent = '✓ Copied';
   setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
